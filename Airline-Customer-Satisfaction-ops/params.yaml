@@ -1,0 +1,10 @@
+random_forest:
+  n_estimators: 100
+  max_depth: 10
+  random_state: 42
+
+data:
+  s3_bucket: "your-s3-bucket-name"
+  s3_key: "path/to/your/data.zip"
+  download_path: "data/raw/data.zip"
+  extract_to: "data/raw/"

@@ -1,0 +1,33 @@
+stages:
+  download_data:
+    cmd: python src/data/load_data.py
+    deps:
+      - src/data/load_data.py
+    outs:
+      - data/raw/
+
+  preprocess_data:
+    cmd: python src/features/preprocess_data.py
+    deps:
+      - src/features/preprocess_data.py
+      - data/raw/
+    outs:
+      - data/processed/airline_satisfaction_processed.csv
+
+  train_model:
+    cmd: python src/models/train_model.py
+    deps:
+      - src/models/train_model.py
+      - data/processed/airline_satisfaction_processed.csv
+    outs:
+      - models/random_forest_model.pkl
+    params:
+      - random_forest.n_estimators
+      - random_forest.max_depth
+
+  deploy_model:
+    cmd: docker build -t airline-satisfaction . && docker run -it --rm -p 8000:8000 airline-satisfaction
+    deps:
+      - Dockerfile
+      - src/app/fastapi_app.py
+      - models/random_forest_model.pkl
